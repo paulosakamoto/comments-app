@@ -8,9 +8,7 @@ use Illuminate\Http\Request;
 class CommentsController extends Controller {
 
   public function index(){
-    return Comment::with(['comments', 'user'])
-      ->whereNull('parent_id')
-      ->orderBy('id', 'desc')
+    return Comment::whereNull('parent_id')
       ->get();
   }
 
@@ -23,6 +21,7 @@ class CommentsController extends Controller {
     $comment = Comment::create(array_merge($data, [
       'user_id' => 1,
     ]));
+    $comment->load(['comments', 'user']);
 
     return $comment->toArray();
   }

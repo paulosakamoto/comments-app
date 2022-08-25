@@ -3,7 +3,7 @@
     <h1>Display Comments</h1>
 
     <div>
-      <comment v-for="(comment, index) in comments" :key="index" :comment="comment" :level="0"></comment>
+      <comment v-for="(comment, index) in comments" :key="index" :comment="comment" :level="0" @commentCreated=""></comment>
     </div>
 
     <div class="form-group">
@@ -37,20 +37,16 @@ export default {
           console.log('comments: ', this.comments);
       });
     },
+    commentCreated(comment) {
+      this.comments
+    },
     addComment() {
       const data = {comment: this.text};
       axios.post('/api/comments', data).then(({data}) => {
-        this.comments = data;
+        this.comments.push(data);
         this.text = '';
       });
     },
-    reply(comment, index) {
-      const data = {comment: comment.reply, parent_id: comment.id};
-      axios.post('/api/comments', data).then(({data}) => {
-        comment.comments.push(data);
-        this.comments[index].reply = '';
-      });
-    }
   }
 }
 </script>

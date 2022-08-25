@@ -1918,13 +1918,19 @@ __webpack_require__.r(__webpack_exports__);
       text: ''
     };
   },
-  created: function created() {
-    console.log('comment.created: ', this.level);
+  computed: {
+    paddingLeft: function paddingLeft() {
+      return this.level * 50 + 'px';
+    }
   },
   methods: {
     reply: function reply() {
       var _this$comment,
           _this = this;
+
+      if (!this.text) {
+        return;
+      }
 
       var data = {
         comment: this.text,
@@ -1932,6 +1938,8 @@ __webpack_require__.r(__webpack_exports__);
       };
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/api/comments', data).then(function (_ref) {
         var data = _ref.data;
+
+        _this.comment.comments.push(data);
 
         _this.$emit('commentCreated', data);
 
@@ -1975,6 +1983,9 @@ __webpack_require__.r(__webpack_exports__);
         console.log('comments: ', _this.comments);
       });
     },
+    commentCreated: function commentCreated(comment) {
+      this.comments;
+    },
     addComment: function addComment() {
       var _this2 = this;
 
@@ -1983,21 +1994,10 @@ __webpack_require__.r(__webpack_exports__);
       };
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/api/comments', data).then(function (_ref2) {
         var data = _ref2.data;
-        _this2.comments = data;
-        _this2.text = '';
-      });
-    },
-    reply: function reply(comment, index) {
-      var _this3 = this;
 
-      var data = {
-        comment: comment.reply,
-        parent_id: comment.id
-      };
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/api/comments', data).then(function (_ref3) {
-        var data = _ref3.data;
-        comment.comments.push(data);
-        _this3.comments[index].reply = '';
+        _this2.comments.push(data);
+
+        _this2.text = '';
       });
     }
   }
@@ -2021,10 +2021,10 @@ var render = function render() {
       _c = _vm._self._c;
 
   return _c("div", {
-    staticStyle: {
-      "padding-left": "100px"
+    style: {
+      "padding-left": _vm.paddingLeft
     }
-  }, [_c("div", [_vm._v("\n    " + _vm._s(_vm.comment.comment) + "\n  ")]), _vm._v(" "), _c("div", {
+  }, [_c("div", [_c("strong", [_vm._v(_vm._s(_vm.comment.user.name))])]), _vm._v(" "), _c("div", [_vm._v("\n    " + _vm._s(_vm.comment.comment) + "\n  ")]), _vm._v(" "), _c("div", {
     staticClass: "form-group mt-4",
     on: {
       click: _vm.reply
@@ -2091,6 +2091,9 @@ var render = function render() {
       attrs: {
         comment: comment,
         level: 0
+      },
+      on: {
+        commentCreated: function commentCreated($event) {}
       }
     });
   }), 1), _vm._v(" "), _c("div", {

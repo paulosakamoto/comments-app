@@ -1,5 +1,8 @@
 <template>
-  <div style="padding-left: 100px">
+  <div :style="{'padding-left': paddingLeft}">
+    <div>
+      <strong>{{ comment.user.name }}</strong>
+    </div>
     <div>
       {{ comment.comment }}
     </div>
@@ -27,13 +30,19 @@ export default {
       text: ''
     }
   },
-  created() {
-    console.log('comment.created: ', this.level);
+  computed: {
+    paddingLeft() {
+      return (this.level * 50) + 'px'
+    }
   },
   methods: {
     reply() {
+      if (!this.text) {
+        return;
+      }
       const data = {comment: this.text, parent_id: this.comment?.id};
       axios.post('/api/comments', data).then(({data}) => {
+        this.comment.comments.push(data);
         this.$emit('commentCreated', data);
         this.text = '';
       });

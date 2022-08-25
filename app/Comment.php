@@ -17,14 +17,11 @@ class Comment extends Model
     'user_id'
   ];
 
+  protected $with = ['user', 'comments'];
+
   public function user()
   {
     return $this->belongsTo(User::class);
-  }
-
-  public function parentComment()
-  {
-    return $this->belongsTo(Comment::class, 'parent_id', 'id');
   }
 
   public function comments()
